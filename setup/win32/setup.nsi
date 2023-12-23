@@ -81,7 +81,7 @@ Unicode True
 !define REGISTRY_KEY "SOFTWARE\${DISPLAY_NAME}"
 
 !define DEFAULT_POSTGRESQL_HOSTNAME 'localhost'
-!define DEFAULT_POSTGRESQL_PORT 5432
+!define DEFAULT_POSTGRESQL_PORT 5433
 !define DEFAULT_POSTGRESQL_USERNAME 'openpg'
 !define DEFAULT_POSTGRESQL_PASSWORD 'openpgpwd'
 
@@ -166,7 +166,7 @@ LangString DESC_CanNotInstallPostgreSQL ${LANG_ENGLISH} "You can not install the
 LangString WARNING_HostNameIsEmpty ${LANG_ENGLISH} "The hostname for the connection to the PostgreSQL Server is empty"
 LangString WARNING_UserNameIsEmpty ${LANG_ENGLISH} "The username for the connection to the PostgreSQL Server is empty"
 LangString WARNING_PasswordIsEmpty ${LANG_ENGLISH} "The password for the connection to the PostgreSQL Server is empty"
-LangString WARNING_PortIsWrong ${LANG_ENGLISH} "The port for the connexion to the PostgreSQL Server is wrong (default: 5432)"
+LangString WARNING_PortIsWrong ${LANG_ENGLISH} "The port for the connexion to the PostgreSQL Server is wrong (default: 5433)"
 LangString DESC_PostgreSQLPage ${LANG_ENGLISH} "Configure the information for the PostgreSQL connection"
 LangString DESC_PostgreSQL_Hostname ${LANG_ENGLISH} "Hostname"
 LangString DESC_PostgreSQL_Port ${LANG_ENGLISH} "Port"
@@ -191,7 +191,7 @@ LangString DESC_CanNotInstallPostgreSQL ${LANG_FRENCH} "Vous ne pouvez pas insta
 LangString WARNING_HostNameIsEmpty ${LANG_FRENCH} "L'adresse pour la connection au serveur PostgreSQL est vide"
 LangString WARNING_UserNameIsEmpty ${LANG_FRENCH} "Le nom d'utilisateur pour la connection au serveur PostgreSQL est vide"
 LangString WARNING_PasswordIsEmpty ${LANG_FRENCH} "Le mot de passe pour la connection au serveur PostgreSQL est vide"
-LangString WARNING_PortIsWrong ${LANG_FRENCH} "Le port pour la connection au serveur PostgreSQL est erroné (défaut: 5432)"
+LangString WARNING_PortIsWrong ${LANG_FRENCH} "Le port pour la connection au serveur PostgreSQL est erroné (défaut: 5433)"
 LangString DESC_PostgreSQLPage ${LANG_FRENCH} "Configurez les informations de connection pour le serveur PostgreSQL"
 LangString DESC_PostgreSQL_Hostname ${LANG_FRENCH} "Hôte"
 LangString DESC_PostgreSQL_Port ${LANG_FRENCH} "Port"
