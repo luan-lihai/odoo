@@ -2141,7 +2141,7 @@ class IrModelData(models.Model):
 
     def _auto_init(self):
         res = super(IrModelData, self)._auto_init()
-        tools.create_index(self._cr, 'ir_model_data_module_name_not_uniq_index',
+        tools.create_unique_index(self._cr, 'ir_model_data_module_name_uniq_index',
                                   self._table, ['module', 'name'])
         tools.create_index(self._cr, 'ir_model_data_model_res_id_index',
                            self._table, ['model', 'res_id'])
