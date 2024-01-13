@@ -172,18 +172,6 @@ class SaleOrderLine(models.Model):
         compute='_compute_price_reduce_taxinc',
         store=True, precompute=True)
 
-
-
-    day_init_locate = fields.Date(
-        string="Day to init locate",
-        compute='_day_init_locate',
-        store=True, precompute=True)
-
-
-
-
-
-
     # Logistics/Delivery fields
     product_packaging_id = fields.Many2one(
         comodel_name='product.packaging',
