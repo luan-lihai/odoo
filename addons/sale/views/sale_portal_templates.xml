@@ -487,6 +487,17 @@
                         <hr class="my-0"/>
                         <div t-field="sale_order.partner_shipping_id" t-options='{ "widget": "contact", "fields": [ "name", "address"]}'/>
                     </span>
+                    <div t-field="sale_order.init_locate" t-options="{ 'widget': 'date'}"/>
+                    <span t-if="sale_order.state in ['sale', 'cancel']"
+                            id="init_locate"
+                            class="col-lg-6">
+                        <br/>
+                        <h5 class="mb-1">
+                            Date to init locate
+                        </h5>
+                        <hr class="my-0"/>
+                        <div t-field="sale_order.init_locate" t-options="{ 'widget': 'date'}"/>
+                    </span>
                 </div>
                 <t t-set="invoices" t-value="sale_order.invoice_ids.filtered(lambda i: i.state not in ['draft', 'cancel']).sorted('date', reverse=True)[:3]"/>
                 <div id="sale_invoices" t-if="invoices and sale_order.state in ['sale', 'cancel']">
