@@ -351,6 +351,7 @@
                         <field name="company_id" invisible="1"/>
                         <field name="currency_id" invisible="1"/>
                         <field name="pricelist_id" invisible="1" readonly="state in ['cancel', 'sale']" groups="!product.group_product_pricelist"/>
+                        <field name="init_locate" invisible="1" readonly="state in ['cancel']"/>                        
                         <field name="tax_country_id" invisible="1"/>
                         <field name="tax_calculation_rounding_method" invisible="1"/>
                         <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"/>
@@ -572,6 +573,9 @@
                                 <field name="discount" string="Disc.%" groups="product.group_discount_per_so_line" optional="show"/>
                                 <field name="is_downpayment" column_invisible="True"/>
                                 <field name="price_subtotal" string="Tax excl." invisible="is_downpayment"/>
+                                <field name="init_locate" string="Init Locate"/>
+
+ 
                                 <field name="price_total"
                                        string="Tax incl."
                                        column_invisible="parent.tax_calculation_rounding_method == 'round_globally'"
@@ -598,6 +602,7 @@
                                 <field name="display_type"/>
                                 <field name="tax_id"/>
                                 <field name="company_id"/>
+                                <field name="init_locate"/>
                                 <field name="tax_calculation_rounding_method"/>
                                 <control>
                                     <create name="add_product_control" string="Add a product"/>
@@ -632,6 +637,12 @@
                                                             <div class="col-12 text-muted">
                                                                 Quantity:
                                                                 <t t-out="record.product_uom_qty.value"/> <t t-out="record.product_uom.value"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-12 text-muted">
+                                                                Init Date:
+                                                                <t t-out="record.view_order_form.init_locate"/> <t t-out="record.view_order_form.init_locate"/>
                                                             </div>
                                                         </div>
                                                         <div class="row">
