@@ -413,7 +413,7 @@ class KVM(object):
             "-cpu", "Skylake-Client,hypervisor=on,hle=off,rtm=off",
             "-smp", "2,sockets=2,cores=1,threads=1",
             "-net", "nic,model=e1000e,macaddr=52:54:00:d3:38:5e",
-            "-net", "user,hostfwd=tcp:127.0.0.1:10022-:22,hostfwd=tcp:127.0.0.1:18069-:8069,hostfwd=tcp:127.0.0.1:15432-:5432",
+            "-net", "user,hostfwd=tcp:127.0.0.1:10022-:22,hostfwd=tcp:127.0.0.1:18069-:8069,hostfwd=tcp:127.0.0.1:15433-:5433",
             "-m", "4096",
             "-drive", f"if=virtio,file={self.image},snapshot=on",
             "-nographic",
