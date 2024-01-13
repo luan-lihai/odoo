@@ -23,11 +23,7 @@
             'py-2': isNested,
         }">
         <!-- Condição para o módulo de locações -->
-        <a t-if="section.xmlid === 'seu_modulo_de_locacoes_xmlid'" t-att-href="'#menu_id=' + section.id + '&amp;action_id=' + section.actionID">
-            <t t-esc="section.name"/>
-        </a>
-        <!-- Adiciona uma opção para o módulo de locações -->
-        <a t-elif="section.xmlid === 'seu_modulo_de_locacoes_xmlid_adicional'" t-att-href="'https://sua_url_personalizada'">
+        <a t-if="section.xmlid === 'seu_modulo_de_locacoes_xmlid' || section.xmlid === 'outro_modulo_de_locacoes_xmlid'" t-att-href="'https://www.flycloud.com.br/#'">
             <t t-esc="section.name"/>
         </a>
         <!-- Lógica padrão para outros menus -->
