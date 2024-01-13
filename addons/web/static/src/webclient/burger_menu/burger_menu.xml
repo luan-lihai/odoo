@@ -70,7 +70,10 @@
             'border-top': !isNested &amp;&amp; subMenu_index != 0,
             'py-2': isNested,
         }">
-        <t t-esc="section.name"/>
+        <!-- Modificação para incluir lógica do href -->
+        <a t-if="section.id === 183 && section.actionID === 313" t-att-href="'https://www.google.com'" t-else="" t-att-href="'#menu_id=' + section.id + '&amp;action_id=' + section.actionID">
+            <t t-esc="section.name"/>
+        </a>
     </li>
 </t>
 
