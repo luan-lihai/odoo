@@ -26,7 +26,7 @@ class PosOrder(models.Model):
     def _compute_currency_rate(self):
         for order in self:
             date_order = order.date_order or fields.Datetime.now()
-            order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id, order.currency_id, order.company_id, date_order)
+            order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id, order.currency_id, order.company_id, date_order.date())
 
     def _prepare_invoice_vals(self):
         invoice_vals = super(PosOrder, self)._prepare_invoice_vals()
@@ -134,5 +134,7 @@ class PosOrderLine(models.Model):
         if vals.get('sale_order_origin_id', False):
             vals['sale_order_origin_id'] = vals['sale_order_origin_id']['id']
         if vals.get('sale_order_line_id', False):
-            vals['sale_order_line_id'] = vals['sale_order_line_id']['id']
+            #We need to make sure the order line has not been deleted while the order was being handled in the PoS
+            order_line = self.env['sale.order.line'].search([('id', '=', vals['sale_order_line_id']['id'])], limit=1)
+            vals['sale_order_line_id'] = order_line.id if order_line else False
         return result

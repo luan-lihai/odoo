@@ -80,6 +80,7 @@ import {
     prepareUpdate,
     boundariesOut,
     getFontSizeDisplayValue,
+    rightLeafOnlyNotBlockPath,
 } from './utils/utils.js';
 import { editorCommands } from './commands/commands.js';
 import { Powerbox } from './powerbox/Powerbox.js';
@@ -620,7 +621,7 @@ export class OdooEditor extends EventTarget {
                     callback: () => {
                         let html = '\u200B<span contenteditable="false" class="o_stars o_three_stars">';
                         html += Array(3).fill().map(() => '<i class="fa fa-star-o"></i>').join('');
-                        html += '</span>';
+                        html += '</span>\u200B';
                         this.execCommand('insert', parseHTML(this.document, html));
                     },
                 },
@@ -633,7 +634,7 @@ export class OdooEditor extends EventTarget {
                     callback: () => {
                         let html = '\u200B<span contenteditable="false" class="o_stars o_five_stars">';
                         html += Array(5).fill().map(() => '<i class="fa fa-star-o"></i>').join('');
-                        html += '</span>';
+                        html += '</span>\u200B';
                         this.execCommand('insert', parseHTML(this.document, html));
                     },
                 },
@@ -868,6 +869,7 @@ export class OdooEditor extends EventTarget {
         if (this.editable.textContent === '' && this.options.placeholder) {
             this._makeHint(this.editable.firstChild, this.options.placeholder, true);
         }
+        this.multiselectionRefresh();
     }
 
     sanitize(target) {
@@ -1820,6 +1822,7 @@ export class OdooEditor extends EventTarget {
     }
 
     _drawClientSelection({ selection, color, clientId, clientName = this.options._t('Anonymous') }) {
+        this._multiselectionRemoveClient(clientId);
         let clientRects;
 
         let anchorNode = this.idFind(selection.anchorNodeOid);
@@ -1905,7 +1908,6 @@ export class OdooEditor extends EventTarget {
             caretElement.style.top = `${rect.y - containerRect.y}px`;
             caretElement.style.left = `${rect.right - containerRect.x}px`;
         }
-        this._multiselectionRemoveClient(clientId);
         this._selectionsContainer.append(caretElement, ...indicators);
     }
 
@@ -2036,12 +2038,16 @@ export class OdooEditor extends EventTarget {
                     // Only add the ZWS at the end if the link is in selection.
                     if (link === linkInSelection) {
                         this._insertLinkZws('end', link);
+                        this.observerUnactive('_setLinkZws_o_link_in_selection');
                         link.classList.add('o_link_in_selection');
+                        this.observerActive('_setLinkZws_o_link_in_selection');
                         didAddZwsInLinkInSelection = true;
                     }
                     const zwsAfter = this._insertLinkZws('after', link);
                     if (!zwsAfter.parentElement || !zwsAfter.parentElement.isContentEditable) {
+                        this.observerUnactive('_setLinkZws_zwsAfter_remove');
                         zwsAfter.remove();
+                        this.observerActive('_setLinkZws_zwsAfter_remove');
                     }
                 }
             }
@@ -2237,7 +2243,11 @@ export class OdooEditor extends EventTarget {
             fillEmpty(closestBlock(start));
         }
         fillEmpty(closestBlock(range.endContainer));
-        const joinWith = range.endContainer;
+        let joinWith = range.endContainer;
+        const rightLeaf = rightLeafOnlyNotBlockPath(joinWith).next().value;
+        if (rightLeaf && rightLeaf.nodeValue === ' ') {
+            joinWith = rightLeaf;
+        }
         // Rejoin blocks that extractContents may have split in two.
         while (
             doJoin &&
@@ -2910,19 +2920,33 @@ export class OdooEditor extends EventTarget {
      */
     _positionTableUi(element) {
         const tableUiContainerRect = this._tableUiContainer.getBoundingClientRect();
+        const isRtl = this.options.direction === 'rtl';
         const isRow = element.nodeName === 'TR';
         const ui = isRow ? this._rowUi : this._columnUi;
         const elementRect = element.getBoundingClientRect();
         const wrappedUi = ui.firstElementChild;
-        const table = getInSelection(this.document, 'table');
+        const table = closestElement(element, 'table');
+        const tableRect = table && table.getBoundingClientRect();
         const resetTableSize = ui.querySelector('.o_reset_table_size');
         if (table && !table.hasAttribute('style')) {
             resetTableSize.classList.add('d-none');
         } else {
             resetTableSize.classList.remove('d-none');
         }
-        ui.style.left = elementRect.left - tableUiContainerRect.left - (isRow ? wrappedUi.clientWidth : 0) + 'px';
-        ui.style.top = elementRect.top - tableUiContainerRect.top - (isRow ? 0 : wrappedUi.clientHeight) + 'px';
+
+        let left;
+        let top;
+        if (isRow && isRtl) {
+            left = tableRect.right - tableUiContainerRect.x;
+        } else if (isRow && !isRtl) {
+            left = elementRect.left - tableUiContainerRect.left - (isRow ? wrappedUi.clientWidth : 0);
+        } else {
+            left = elementRect.left - tableUiContainerRect.left - (isRow ? wrappedUi.clientWidth : 0);
+        }
+        top = elementRect.top - tableUiContainerRect.top - (isRow ? 0 : wrappedUi.clientHeight);
+
+        ui.style.left = left + 'px';
+        ui.style.top = top + 'px';
         wrappedUi.style[isRow ? 'height' : 'width'] = elementRect[isRow ? 'height' : 'width'] + 'px';
 
     }
@@ -4682,6 +4706,8 @@ export class OdooEditor extends EventTarget {
             !closestElement(selection.anchorNode).closest('a') &&
             selection.anchorNode.nodeType === Node.TEXT_NODE
         ) {
+            // Merge adjacent text nodes.
+            selection.anchorNode.parentNode.normalize();
             const textSliced = selection.anchorNode.textContent.slice(0, selection.anchorOffset);
             const textNodeSplitted = textSliced.split(/\s/);
             const potentialUrl = textNodeSplitted.pop();
@@ -5011,6 +5037,15 @@ export class OdooEditor extends EventTarget {
     _onTableMenuTogglerClick(ev) {
         const uiWrapper = ev.target.closest('.o_table_ui');
         uiWrapper.classList.toggle('o_open');
+
+        if (this.options.direction === 'rtl') {
+            const menuRowEl = this._tableUiContainer.querySelector('.o_row_ui .o_table_ui_menu')
+            const menuRowRect = menuRowEl.getBoundingClientRect();
+            menuRowEl.style.position = 'absolute';
+            menuRowEl.style.left = `-${menuRowRect.width}px`;
+            menuRowEl.style.margin = `0px`;
+        }
+
         if (uiWrapper.classList.contains('o_column_ui')) {
             const columnIndex = getColumnIndex(this._columnUiTarget);
             uiWrapper.querySelector('.o_move_left').classList.toggle('o_hide', columnIndex === 0);
