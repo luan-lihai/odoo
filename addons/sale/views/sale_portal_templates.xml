@@ -488,7 +488,7 @@
                         <div t-field="sale_order.partner_shipping_id" t-options='{ "widget": "contact", "fields": [ "name", "address"]}'/>
                     </span>
                     <div t-field="sale_order.init_locate" t-options="{ 'widget': 'date'}"/>
-                    <span t-if="sale_order.state in ['sale', 'cancel']"
+                    <span t-if="sale_order.state"
                             id="init_locate"
                             class="col-lg-6">
                         <br/>
