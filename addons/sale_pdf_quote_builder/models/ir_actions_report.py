@@ -137,6 +137,8 @@ class IrActionsReport(models.Model):
             'amount_untaxed': format_amount(env, order.amount_untaxed, order.currency_id),
             'amount_total': format_amount(env, order.amount_total, order.currency_id),
             'delivery_date': format_datetime(env, order.commitment_date, tz=tz),
+            'data_init_locate': format_datetime(env, order.data_init_locate, tz=tz),
+            'data_finish_locate': format_datetime(env, order.data_finish_locate, tz=tz),
             'validity_date': format_date(env, order.validity_date, lang_code=lang_code),
             'client_order_ref': order.client_order_ref or '',
         }

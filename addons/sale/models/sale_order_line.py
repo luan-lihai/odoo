@@ -172,6 +172,18 @@ class SaleOrderLine(models.Model):
         compute='_compute_price_reduce_taxinc',
         store=True, precompute=True)
 
+
+
+    day_init_locate = fields.Date(
+        string="Day to init locate",
+        compute='_day_init_locate',
+        store=True, precompute=True)
+
+
+
+
+
+
     # Logistics/Delivery fields
     product_packaging_id = fields.Many2one(
         comodel_name='product.packaging',
@@ -562,7 +574,7 @@ class SaleOrderLine(models.Model):
             currency=self.currency_id,
         )
 
-    @api.depends('product_id', 'product_uom', 'product_uom_qty')
+    @api.depends('product_id', 'product_uom', 'product_uom_qty', 'days_to_return')
     def _compute_discount(self):
         for line in self:
             if not line.product_id or line.display_type:
@@ -641,6 +653,10 @@ class SaleOrderLine(models.Model):
     def _compute_price_reduce_taxinc(self):
         for line in self:
             line.price_reduce_taxinc = line.price_total / line.product_uom_qty if line.product_uom_qty else 0.0
+
+
+
+
 
     @api.depends('product_id', 'product_uom_qty', 'product_uom')
     def _compute_product_packaging_id(self):

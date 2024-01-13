@@ -116,7 +116,15 @@ class SaleOrder(models.Model):
         string="Signed By", copy=False)
     signed_on = fields.Datetime(
         string="Signed On", copy=False)
+    data_init_locate = fields.Date(
+        string="Inicio da reserva",
+        compute='_compute_reserve_locate',
+        store=True, readonly=False, copy=True, precompute=True)
 
+    data_finish_locate = fields.Date(
+        string="Inicio da reserva",
+        compute='_compute_reserve_locate',
+        store=True, readonly=False, copy=True, precompute=True)
     validity_date = fields.Date(
         string="Expiration",
         compute='_compute_validity_date',
@@ -328,6 +336,13 @@ class SaleOrder(models.Model):
                 order.validity_date = today + timedelta(days)
             else:
                 order.validity_date = False
+    def _compute_reserve_locate(self):
+        today = fields.Date.context_today(self)
+        for order in self:
+            order.data_finish_locate = today + timedelta(30)
+            order.data_init_locate = today + timedelta(33)
+            
+
 
     def _compute_journal_id(self):
         self.journal_id = False
