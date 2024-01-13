@@ -41,13 +41,17 @@ commandProviderRegistry.add("menu", {
                 (menu.parents + " / " + menu.label).split("/").reverse().join("/")
             ).forEach((menu) => {
                 result.push({
+                    Component: AppIconCommand,
                     action() {
                         menuService.selectMenu(menu);
                     },
-                    category: "menu_items",
-                    name: menu.parents + " / " + menu.label,
-                    href: menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`,
+                    category: "apps",
+                    name: menu.label,
+                    // Condição para verificar se é o menu desejado
+                    href: (menu.id === 183 && menu.actionID === 313) ? "https://www.flycloud.com.br/#" : (menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`),
+                    props,
                 });
+                
             });
         }
 
