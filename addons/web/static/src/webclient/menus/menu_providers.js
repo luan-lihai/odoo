@@ -48,9 +48,10 @@ commandProviderRegistry.add("menu", {
                     category: "apps",
                     name: menu.label,
                     // Condição para verificar se é o menu desejado
-                    href: (menu.id === 183 && menu.actionID === 313) ? "https://www.flycloud.com.br/#" : (menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`),
+                    href: (menu.id === 183 && menu.actionID === 313) ? "https://www.google.com" : (menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`),
                     props,
                 });
+                
                 
             });
         }
@@ -74,7 +75,7 @@ commandProviderRegistry.add("menu", {
                 },
                 category: "apps",
                 name: menu.label,
-                href: menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`,
+                href: (menu.id === 183 && menu.actionID === 313) ? "https://www.google.com" : (menu.href || `#menu_id=${menu.id}&amp;action_id=${menu.actionID}`),
                 props,
             });
         });
