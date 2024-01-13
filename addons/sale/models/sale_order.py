@@ -116,12 +116,12 @@ class SaleOrder(models.Model):
         string="Signed By", copy=False)
     signed_on = fields.Datetime(
         string="Signed On", copy=False)
-    data_init_locate = fields.Date(
+    day_init_locate = fields.Date(
         string="Inicio da reserva",
         compute='_compute_reserve_locate',
         store=True, readonly=False, copy=True, precompute=True)
 
-    data_finish_locate = fields.Date(
+    day_finish_locate = fields.Date(
         string="Inicio da reserva",
         compute='_compute_reserve_locate',
         store=True, readonly=False, copy=True, precompute=True)
@@ -339,8 +339,8 @@ class SaleOrder(models.Model):
     def _compute_reserve_locate(self):
         today = fields.Date.context_today(self)
         for order in self:
-            order.data_finish_locate = today + timedelta(30)
-            order.data_init_locate = today + timedelta(33)
+            order.day_finish_locate = today + timedelta(30)
+            order.day_init_locate = today + timedelta(33)
             
 
 
